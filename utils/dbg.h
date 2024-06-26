@@ -16,5 +16,5 @@ static void dbg_(const char *fmt, ...)
     va_end(args);
 }
 
-#define dbg(msg) dbg_(msg "\n")
-#define dbgf(fmt, ...) dbg_(fmt "\n", __VA_ARGS__)
+#define dbg(msg) dbg_(F(msg "\n"))
+#define dbgf(fmt, ...) dbg_(F(fmt "\n"), __VA_ARGS__)

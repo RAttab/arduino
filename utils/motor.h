@@ -25,21 +25,21 @@ static void motor_set(struct motor *motor, int speed)
     motor->speed = constrain(speed, -motor_speed_cap, motor_speed_cap);
 
     if (!motor->speed) {
-        digitalWrite(motor->pins.left, 0);
-        digitalWrite(motor->pins.right, 0);
+        digitalWrite(motor->pins.left, LOW);
+        digitalWrite(motor->pins.right, LOW);
         digitalWrite(motor->pins.pwm, abs(0));
         return;
     }
 
     if (motor->speed < 0) {
-        digitalWrite(motor->pins.left, 0);
-        digitalWrite(motor->pins.right, 255);
+        digitalWrite(motor->pins.left, LOW);
+        digitalWrite(motor->pins.right, HIGH);
     }
     else {
-        digitalWrite(motor->pins.left, 255);
-        digitalWrite(motor->pins.right, 0);
+        digitalWrite(motor->pins.left, HIGH);
+        digitalWrite(motor->pins.right, LOW);
     }
 
-    digitalWrite(motor->pins.pwm, abs(motor->speed));
+    analogWrite(motor->pins.pwm, abs(motor->speed));
 }
 

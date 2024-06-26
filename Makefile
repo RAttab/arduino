@@ -1,6 +1,6 @@
-port := /dev/ttyACM0
-fqbn := arduino:avr:mega
 cli := arduino-cli
+fqbn := arduino:avr:mega
+port := $(shell find /dev/serial/by-id -name '*arduino*' -exec readlink -f {} \;)
 
 src := $(src) $(wildcard ./*.c)
 src := $(src) $(wildcard ./*.h)
