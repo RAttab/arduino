@@ -17,6 +17,11 @@ build: $(src)
 upload: build
 	$(cli) upload --port $(port) --fqbn $(fqbn) .
 
+.PHONY: monitor
+monitor:
+	$(cli) monitor --port $(port) --fqbn $(fqbn) --config 115200
+
+
 .PHONY: tail
 tail:
 	cat $(port)
