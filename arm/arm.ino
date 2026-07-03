@@ -23,10 +23,9 @@ enum mode
     mode_discover = 1,
     mode_set_id = 2,
     mode_test = 3,
-    mode_init = 4,
 } mode = mode_discover;
 
-enum mode action = mode_init;
+enum mode action = mode_test;
 int action_set_id_to = 3;
 
 SMS_STS st;
@@ -70,7 +69,7 @@ void set_id(struct servo *servo, int id)
 void wait_idle(struct servo *servo)
 {
     unsigned prev = 0;
-    delay(100);
+    delay(150);
 
     do {
         prev = servo->pos;
@@ -90,25 +89,24 @@ void move(struct servo *servo, float angle, unsigned speed, unsigned acc = 100)
 
 void test(void)
 {
-    for (unsigned i = 0; i < servos_len; ++i) {
+    float start[servos_cap] = {0};
+    for (size_t i = 0; i < servos_len; ++i) {
         struct servo *servo = servos + i;
-        dbgf("[test] id=%d", servo->id);
-        move(servo, 0.5, 3000, 100);
+        start[i] = (float) servo->pos / 4096;
+        move(servo, 0.50, 2000, 100);
     }
 
-    mode = mode_nil;
-}
+    for (size_t i = 0; i < servos_len; ++i) {
+        struct servo *servo = servos + i;
+        move(servo, 0.25, 2000, 100);
+        move(servo, 0.75, 2000, 100);
+        move(servo, 0.50, 2000, 100);
+    }
 
-void init_pos(void)
-{
-    dbgf("[init] %d", 0);
-    move(servos + 0, 0.25, 2000);
-
-    dbgf("[init] %d", 1);
-    move(servos + 1, 0.5, 2000);
-
-    dbgf("[init] %d", 2);
-    move(servos + 2, 0.5, 2000);
+    for (int i = servos_len - 1; i >= 0; --i) {
+        struct servo *servo = servos + i;
+        move(servo, start[i], 2000, 100);
+    }
 
     mode = mode_nil;
 }
@@ -122,7 +120,6 @@ void loop() {
     case mode_discover: { discover(); break; }
     case mode_set_id: { set_id(servos, action_set_id_to); break; }
     case mode_test: { test(); break; }
-    case mode_init: { init_pos(); break; }
     default: break;
     }
 }
